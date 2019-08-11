@@ -1,0 +1,10 @@
+<!-- Only show this div when userDetails variable is populated inside home.component.ts-->
+<!-- ngIf directive will do that.-->
+<div class="card m-5" style="width:18rem" *ngIf="userDetails">
+<ul class="list-group">
+  <!-- JSON object properties are camel cased, make sure userDetails calls are correct-->
+  <li class="list-group-item"><strong>Username: </strong>{{userDetails.userName}}</li>
+  <li class="list-group-item"><strong>Full name: </strong>{{userDetails.fullName}}</li>
+  <li class="list-group-item"><strong>Email: </strong>{{userDetails.email}}</li>
+</ul>
+</div>

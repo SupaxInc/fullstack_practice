@@ -1,0 +1,19 @@
+<div class="wrapper">
+  <div class="wrapped-div">
+
+    <!-- This div contains tabs that references to Register or Login page-->
+    <div class="tab-header">
+      <!-- routerLink is an Angular attribute related to href/hyperlink-->
+      <h2 routerLink='/user/login' routerLinkActive='active'>Sign In</h2>
+      <h2 routerLink='/user/registration' routerLinkActive='active'>Sign Up</h2>
+    </div>
+
+    <!-- This div will show the HTML component based on the ACTIVE tab-->
+    <div class="row"> 
+      <div class="col-md-10 offset-md-1">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+
+  </div>
+</div>

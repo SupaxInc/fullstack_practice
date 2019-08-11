@@ -1,0 +1,24 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a href="" class="navbar-brand text-white"> Supax</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
+  aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigations">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarColor01">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" routerLink='/pages/home' routerLinkActive='active'>Home</a>
+        <!-- routerLinkActive figures out which route is currently active which changes the css-->
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink='/pages/todolist' routerLinkActive='active'>To-do List</a>
+      </li>
+    </ul>
+  </div>
+<button class="btn btn-danger my-2 my-sm-0" (click)="onLogout()">Logout</button>
+</nav>
+
+<!-- Based on ACTIVE routerLink, this div will show the route that is ACTIVE-->
+<div>
+  <router-outlet></router-outlet>
+</div>
