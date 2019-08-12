@@ -15,7 +15,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Swashbuckle.AspNetCore.Swagger;
 using webAPI.Models;
+using webAPI.Options;
 
 namespace webAPI
 {
@@ -85,6 +87,13 @@ namespace webAPI
                                                 // Zero Timespan because there is no time diff b/w server and client side
                 };
             });
+
+
+            // Creates swagger service and generates swagger page
+            services.AddSwaggerGen(x =>
+            {
+                x.SwaggerDoc("v1", new Info { Title = "Web API", Version = "v1"});
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -95,6 +104,18 @@ namespace webAPI
                 app.UseDeveloperExceptionPage();
             }
 
+            // Configuring swagger page, had to manually use namespace 'Options' (ex. Options.SwaggerOptions())
+            // due to ambiguos reference with Swashbuckle namespace
+            var swaggerOptions = new Options.SwaggerOptions();
+            Configuration.GetSection(nameof(Options.SwaggerOptions)).Bind(swaggerOptions);
+            app.UseSwagger(option =>
+            {
+                option.RouteTemplate = swaggerOptions.JsonRoute;
+            });
+            app.UseSwaggerUI(option =>
+            {
+                option.SwaggerEndpoint(swaggerOptions.UIEndpoint, swaggerOptions.Description);
+            });
             
 
             app.UseCors(builder =>
