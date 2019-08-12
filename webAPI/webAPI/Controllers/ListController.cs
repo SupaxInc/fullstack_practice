@@ -23,7 +23,11 @@ namespace webAPI.Controllers
         {
             _context = context;
         }
-
+        
+        /// <summary>
+        /// Creates a new to-do item
+        /// </summary>
+        /// <returns></returns>
         [HttpPost] // PATH URL: api/list
         public async Task<ActionResult<List>> PostListItem(ListModel model)
         {
@@ -53,12 +57,21 @@ namespace webAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Gets ALL existing to-do items
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]   // PATH URL: api/list
         public async Task<IEnumerable<List>> GetListItems()
         {
             return await _context.ListItems.ToListAsync();
         }
 
+        /// <summary>
+        /// Gets a to-do item from specific id
+        /// </summary>
+        /// <param name="id">User ID</param>
+        /// <returns></returns>
         [HttpGet("{id}")]   // PATH URL: api/list/n
         public async Task<IEnumerable<ApplicationUser>> GetListItem(string id)
         {
@@ -74,6 +87,12 @@ namespace webAPI.Controllers
             return listItems;
         }
 
+        /// <summary>
+        /// Replaces to-do item from specific id
+        /// </summary>
+        /// <param name="id">User ID</param>
+        /// <param name="model">Test</param>
+        /// <returns></returns>
         [HttpPut("{id}")]   // PATH URL: api/list/n
         public async Task<Object> PutListItem(int id, List model)
         {
@@ -88,6 +107,12 @@ namespace webAPI.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Patches to-do item from specific id
+        /// </summary>
+        /// <param name="id">User ID</param>
+        /// <param name="listPatch">Test</param>
+        /// <returns></returns>
         [HttpPatch("{id}")] // PATH URL: api/list/n
         public async Task<IActionResult> PatchListItem(int id, [FromBody]JsonPatchDocument<List> listPatch)
         {
@@ -127,6 +152,11 @@ namespace webAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Deletes to-do from specific id
+        /// </summary>
+        /// <param name="id">User ID</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]    // PATH URL: api/list/n
         public async Task<Object> DeleteListItem(int id)
         {

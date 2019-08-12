@@ -93,6 +93,8 @@ namespace webAPI
             services.AddSwaggerGen(x =>
             {
                 x.SwaggerDoc("v1", new Info { Title = "Web API", Version = "v1"});
+                var xmlPath = System.AppDomain.CurrentDomain.BaseDirectory + @"webAPI.xml";
+                x.IncludeXmlComments(xmlPath);
             });
         }
 
@@ -105,7 +107,7 @@ namespace webAPI
             }
 
             // Configuring swagger page, had to manually use namespace 'Options' (ex. Options.SwaggerOptions())
-            // due to ambiguos reference with Swashbuckle namespace
+            // due to ambiguous reference with Swashbuckle namespace
             var swaggerOptions = new Options.SwaggerOptions();
             Configuration.GetSection(nameof(Options.SwaggerOptions)).Bind(swaggerOptions);
             app.UseSwagger(option =>
