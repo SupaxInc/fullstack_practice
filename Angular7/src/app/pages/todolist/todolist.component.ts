@@ -12,27 +12,9 @@ export class TodolistComponent implements OnInit {
 
   constructor(public toDoService: TodoService, private toastr: ToastrService,
     public userService: UserService) { }
-  userDetails;
   toDoList: any[];
   ngOnInit() {
-    this.userService.getUserProfile().subscribe(
-      // Callback functions for success and error
-      // Success function should receive the User Profile data JSON object
-      res => {
-        this.userDetails = res;
-      },
-      err =>{
-        console.log(err);
-      }
-    );
-
-    // this.toDoService.getAllToDo().subscribe(
-    //   (res:any[]) => {
-    //     this.toDoList = res;
-    //   }
-    // );
-
-    this.toDoService.getToDo(this.userDetails.id).subscribe(
+    this.toDoService.getAllToDo().subscribe(
       (res:any[]) => {
         this.toDoList = res;
       }

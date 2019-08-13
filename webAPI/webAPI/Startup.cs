@@ -93,6 +93,10 @@ namespace webAPI
             services.AddSwaggerGen(x =>
             {
                 x.SwaggerDoc("v1", new Info { Title = "Web API", Version = "v1"});
+                var security = new Dictionary<string, IEnumerable<string>>
+                {
+                    {"Bearer", new string[] {}},
+                };
                 x.AddSecurityDefinition("Bearer", new ApiKeyScheme
                 {
                     Description = "JWT Authorization. Example: \"Bearer {token}\"",
@@ -100,6 +104,7 @@ namespace webAPI
                     In = "header",
                     Type = "apiKey"
                 });
+                x.AddSecurityRequirement(security);
                 var xmlPath = System.AppDomain.CurrentDomain.BaseDirectory + @"webAPI.xml";
                 x.IncludeXmlComments(xmlPath);
             });

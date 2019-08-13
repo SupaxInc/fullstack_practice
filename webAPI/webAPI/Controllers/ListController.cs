@@ -57,44 +57,43 @@ namespace webAPI.Controllers
             }
         }
 
+
+        // THIS METHOD COULD BE USED FOR ADMIN PURPOSES
         /// <summary>
         /// Gets ALL existing to-do items
         /// </summary>
         /// <returns></returns>
-        [HttpGet]   // PATH URL: api/list
-        public async Task<IEnumerable<List>> GetListItems()
-        {
-            return await _context.ListItems.ToListAsync();
-        }
+        //[HttpGet]   // PATH URL: api/list
+        //public async Task<IEnumerable<List>> GetAllListItems()
+        //{
+        //    return await _context.ListItems.ToListAsync();
+        //}
+
 
         /// <summary>
-        /// Gets a to-do item from specific id
+        /// Gets ALL to-do items from logged in user
         /// </summary>
-        /// <param name="id">User ID</param>
         /// <returns></returns>
-        [HttpGet("{id}")]   // PATH URL: api/list/n
-        public async Task<IEnumerable<ApplicationUser>> GetListItem(string id)
+        [HttpGet]   // PATH URL: api/list/n
+        public async Task<IEnumerable<List>> GetListItems()
         {
-            // OLD CODE when ListItems contained NO foreign key constraints
-            // var listItem = await _context.ListItems.FindAsync(id);
+            // Get the User ID from logged in User
+            string userId = User.Claims.First(c => c.Type == "UserID").Value;
 
-            // NEW CODE for foreign key constraint
-            // Depending on the user model, include the collection of Lists property
-            // and find the Id that matches
-            var listItems = await _context.ApplicationUsers.Include(x => x.Lists)
-                                    .Where(x => x.Id == id).ToListAsync();
-
-            return listItems;
+            // Find the To-do items depending on the logged in user
+            // Uses LINQ query to match the user ID with user FK 
+            var result = await _context.ListItems.Where(x => x.UserFK == userId).ToListAsync();
+            return result;
         }
 
         /// <summary>
         /// Replaces to-do item from specific id
         /// </summary>
-        /// <param name="id">User ID</param>
-        /// <param name="model">Test</param>
+        /// <param name="id">To-do Id</param>
+        /// <param name="model">List</param>
         /// <returns></returns>
         [HttpPut("{id}")]   // PATH URL: api/list/n
-        public async Task<Object> PutListItem(int id, List model)
+        public async Task<Object> PutListItem(int id, ListModel model)
         {
             if(id != model.Id)
             {
@@ -110,8 +109,8 @@ namespace webAPI.Controllers
         /// <summary>
         /// Patches to-do item from specific id
         /// </summary>
-        /// <param name="id">User ID</param>
-        /// <param name="listPatch">Test</param>
+        /// <param name="id">To-do Id</param>
+        /// <param name="listPatch"></param>
         /// <returns></returns>
         [HttpPatch("{id}")] // PATH URL: api/list/n
         public async Task<IActionResult> PatchListItem(int id, [FromBody]JsonPatchDocument<List> listPatch)
@@ -123,17 +122,29 @@ namespace webAPI.Controllers
                     return BadRequest();
                 }
 
-                // Retrieve the list items from the database for the specified id
-                var result = await _context.ListItems.SingleOrDefaultAsync(x => x.Id == id);
+                // Get the User ID from logged in User
+                string userId = User.Claims.First(c => c.Type == "UserID").Value;
 
-                if (result == null)
+                // Retrieve the list of to-do items from logged in user
+                // this will prevent the changing of different items from other users
+                var result = await _context.ApplicationUsers
+                                .Include(x => x.Lists)
+                                .FirstOrDefaultAsync(x => x.Id == userId);
+
+                // Get the specific to-do item from the id
+                var item = result.Lists.SingleOrDefault(x => x.Id == id);
+
+                // Retrieve the list items from the database for the specified id
+                // var result = await _context.ListItems.SingleOrDefaultAsync(x => x.Id == id);
+
+                if (item == null)
                 {
                     return NotFound();
                 }
                 // Change the date to when the HTTP request was sent
-                result.LastModified = DateTime.Now;
+                item.LastModified = DateTime.Now;
                 // Apply the operations on the list datatables
-                listPatch.ApplyTo(result, ModelState);
+                listPatch.ApplyTo(item, ModelState);
 
                 // Validating the model to verify that all validation rules are respected
                 var isValid = TryValidateModel(result);
@@ -155,7 +166,7 @@ namespace webAPI.Controllers
         /// <summary>
         /// Deletes to-do from specific id
         /// </summary>
-        /// <param name="id">User ID</param>
+        /// <param name="id">To-do Id</param>
         /// <returns></returns>
         [HttpDelete("{id}")]    // PATH URL: api/list/n
         public async Task<Object> DeleteListItem(int id)
