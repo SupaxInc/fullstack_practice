@@ -19,11 +19,11 @@
           <span class="hover-cursor" [class.text-success]="item.isCompleted === 'Y'" (click)="item.isCompleted === 'Y' ? alterCheck(false, item.id) : alterCheck(true, item.id)">
             <!-- [ngClass] will add or remove css classes on an HTML element-->
             <!-- If the item is completed show checkmark, if not display no checkmark-->
-            <i class="fa fa-lg" [ngClass]="item.isCompleted === 'Y' ? 'fa-check-circle-o':'fa-circle-thin'"></i>
+            <i [ngClass]="item.isCompleted === 'Y' ? 'fas fa-circle':'far fa-circle'"></i>
           </span>
           {{item.description}}
           <span class="hover-cursor text-danger pull-right" (click)="delete(item.id)">
-            <i class="fa fa-trash-o fa-lg"></i>
+            <i class="fas fa-trash-alt"></i>
           </span>
         </li>
       </ul>
